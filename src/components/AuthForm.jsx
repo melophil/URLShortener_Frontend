@@ -9,6 +9,8 @@ export default function AuthForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [remember, setRemember] = useState(false);
+
 
   const handleSubmit = async () => {
     try {
@@ -22,7 +24,7 @@ export default function AuthForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      login(data.token);
+      login(data.token,remember);
     } catch (err) {
       setError(err.message || "Auth failed");
     }
@@ -42,6 +44,15 @@ export default function AuthForm() {
       <p onClick={() => setIsLogin(!isLogin)} style={{ cursor: "pointer", color: "#4f46e5" }}>
         {isLogin ? "No account? Sign up" : "Already have an account? Login"}
       </p>
+      <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+  <input
+    type="checkbox"
+    checked={remember}
+    onChange={(e) => setRemember(e.target.checked)}
+  />
+  Remember me
+</label>
+
     </div>
   );
 }
