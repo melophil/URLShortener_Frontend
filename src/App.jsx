@@ -6,6 +6,7 @@ import TrendingList from "./components/TrendingList";
 import Toast from "./components/Toast";
 import AuthForm from "./components/AuthForm";
 import { AuthContext } from "./context/AuthContext";
+import MyLinks from "./components/MyLinks";
 
 function App() {
   const { token, logout } = useContext(AuthContext); // 🔐 auth state
@@ -31,6 +32,7 @@ function App() {
       {token ? (
         <>
           <UrlShortener showToast={showToast} />
+          <MyLinks />
           <TrendingList />
         </>
       ) : (
