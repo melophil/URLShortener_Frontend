@@ -1,49 +1,43 @@
 import { createContext, useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
+const API_BASE = "http://localhost:5000";
+
 export default function AuthProvider({ children }) {
-  const [token, setToken] = useState(() =>
-    sessionStorage.getItem("token") || localStorage.getItem("token")
-  );
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const login = (newToken, remember = false) => {
-    if (remember) {
-      localStorage.setItem("token", newToken);
-    } else {
-      sessionStorage.setItem("token", newToken);
-    }
-    setToken(newToken);
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    setToken(null);
-  };
-
-  // 🔄 Auto logout when token expires
+  // Check session on app load
   useEffect(() => {
-    if (!token) return;
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/auth/me`, {
+          credentials: "include"
+        });
 
-    try {
-      const { exp } = jwtDecode(token);
-      const expiryTime = exp * 1000 - Date.now();
-
-      if (expiryTime <= 0) {
-        logout();
-      } else {
-        const timer = setTimeout(logout, expiryTime);
-        return () => clearTimeout(timer);
+        if (res.ok) setAuthenticated(true);
+        else setAuthenticated(false);
+      } catch {
+        setAuthenticated(false);
+      } finally {
+        setLoading(false);
       }
-    } catch {
-      logout();
-    }
-  }, [token]);
+    };
+
+    checkAuth();
+  }, []);
+
+  const logout = async () => {
+    await fetch(`${API_BASE}/auth/logout`, {
+      method: "POST",
+      credentials: "include"
+    });
+    setAuthenticated(false);
+  };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -9,7 +9,7 @@ import { AuthContext } from "./context/AuthContext";
 import MyLinks from "./components/MyLinks";
 
 function App() {
-  const { token, logout } = useContext(AuthContext); // 🔐 auth state
+  const { isAuthenticated, logout } = useContext(AuthContext); // ⭐ correct state
   const [toastMsg, setToastMsg] = useState("");
 
   const showToast = (msg) => {
@@ -21,15 +21,13 @@ function App() {
     <div className="app-container">
       <Header />
 
-      {/* 🔐 Show logout if logged in */}
-      {token && (
+      {isAuthenticated && (
         <div style={{ textAlign: "right", marginBottom: "10px" }}>
           <button onClick={logout}>Logout</button>
         </div>
       )}
 
-      {/* 🔄 Conditional Rendering */}
-      {token ? (
+      {isAuthenticated ? (
         <>
           <UrlShortener showToast={showToast} />
           <MyLinks />

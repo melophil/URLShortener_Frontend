@@ -1,11 +1,8 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState } from "react";
 
 const API_BASE = "http://localhost:5000";
 
 export default function UrlShortener({ showToast }) {
-  const { token } = useContext(AuthContext); // ✅ get token
-
   const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,17 +13,12 @@ export default function UrlShortener({ showToast }) {
       setLoading(true);
       setError("");
 
-      if (!token) {
-        setError("You must be logged in to shorten URLs");
-        return;
-      }
-
       const res = await fetch(`${API_BASE}/shorten`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` // ✅ send token
+          "Content-Type": "application/json"
         },
+        credentials: "include", // ⭐ send HTTP-only cookie automatically
         body: JSON.stringify({ longUrl })
       });
 
