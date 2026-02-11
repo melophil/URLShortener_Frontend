@@ -7,6 +7,7 @@ import Toast from "./components/Toast";
 import AuthForm from "./components/AuthForm";
 import { AuthContext } from "./context/AuthContext";
 import MyLinks from "./components/MyLinks";
+import Layout from "./components/Layout";
 
 function App() {
   const { isAuthenticated, logout } = useContext(AuthContext); // ⭐ correct state
@@ -28,11 +29,11 @@ function App() {
       )}
 
       {isAuthenticated ? (
-        <>
+        <Layout>
           <UrlShortener showToast={showToast} />
           <MyLinks />
           <TrendingList />
-        </>
+         </Layout>
       ) : (
         <AuthForm />
       )}
