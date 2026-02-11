@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <Header />
+      
 
       {isAuthenticated && (
         <div style={{ textAlign: "right", marginBottom: "10px" }}>
